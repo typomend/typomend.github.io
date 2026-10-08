@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>Typomend</title>
+    <meta
+      name="description"
+      content="Typomend：照常輸入，原地修正。錯字在你打字的地方就被修好。"
+    />
+    <meta name="theme-color" content="#0b0f1a" />
+    <meta property="og:title" content="Typomend" />
+    <meta
+      property="og:description"
+      content="照常輸入，原地修正。錯字在你打字的地方就被修好。"
+    />
+    <meta property="og:url" content="https://typomend.github.io/" />
+    <meta property="og:type" content="website" />
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="/logo/Typomend-symbol-color.svg"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Noto+Sans+TC:wght@300..900&display=swap"
+    />
+    <script>
+      if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        document.documentElement.classList.add("motion");
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript>Typomend 的網站需要 JavaScript 才能顯示。</noscript>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,5 @@
+peerDependencyRules:
+  allowedVersions:
+    # eslint-plugin-jsx-a11y 6.10.2 runs on ESLint 10 but its peer range stops at ^9.
+    # Remove this once the plugin publishes a release that lists ESLint 10.
+    eslint-plugin-jsx-a11y>eslint: "10"
