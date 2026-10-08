@@ -1,64 +1,64 @@
 import { useRef, useState } from "react";
+import { exampleDeck, firstExample } from "../lib/examples";
 import { gsap, MOTION, must, ScrollTrigger, useGSAP } from "../lib/motion";
-import { createRenderer, playTape, Tape } from "../lib/tape";
+import { createRenderer, playTape, type Tape } from "../lib/tape";
 
-function heroTape() {
-  return new Tape()
-    .type("明天")
-    .commit()
-    .type("我")
-    .commit()
-    .type("因該")
-    .commit()
-    .hold(1)
-    .type("會準時到")
-    .commit()
-    .type("。")
-    .commit()
-    .hold(3)
-    .mend("因該", "應該");
-}
+/** How long a mended sentence stays up before the next one, in ms. */
+const READ_TIME = 2600;
+const FADE_TIME = 450;
 
-/** S1 Hook: the sentence types itself and the typo is mended in place. */
+/** S1 Hook: sentences type themselves and their typos are mended in place, one after another. */
 export function Hero() {
   const section = useRef<HTMLElement>(null);
+  const button = useRef<HTMLButtonElement>(null);
   const line = useRef<HTMLSpanElement>(null);
-  const [badge, setBadge] = useState(!MOTION);
-  const replay = useRef<() => void>(() => undefined);
+  const [tagline, setTagline] = useState(!MOTION);
+  const skip = useRef<() => void>(() => undefined);
 
   useGSAP(
     () => {
       const root = must(section.current, "hero");
       const el = must(line.current, "hero line");
-      const tape = heroTape();
+      const btn = must(button.current, "hero button");
       const renderer = createRenderer(el);
-      const fixAt = tape.find("fix");
-      let stop: () => void = () => undefined;
-      let again = 0;
 
-      // The demo loops like a product film, but only while the first screen is in view.
-      const loop = () => {
-        if (window.scrollY < window.innerHeight * 0.4) play();
-        else again = window.setTimeout(loop, 1000);
-      };
-      const play = () => {
-        stop();
-        window.clearTimeout(again);
-        stop = playTape(tape, renderer, (i) => {
-          if (i === fixAt) setBadge(true);
-          if (i === tape.last) again = window.setTimeout(loop, 4200);
-        });
-      };
-      replay.current = play;
-
-      const last = tape.frames[tape.last];
       if (!MOTION) {
+        const last = firstExample.frames[firstExample.last];
         if (last) renderer.draw(last);
         renderer.caret(false);
         return;
       }
 
-      const start = window.setTimeout(play, 700);
+      const next = exampleDeck();
+      let stop: () => void = () => undefined;
+      let timer = 0;
+      const onScreen = () => window.scrollY < window.innerHeight * 0.4;
+
+      const play = (tape: Tape) => {
+        stop();
+        btn.classList.remove("is-out");
+        const fixAt = tape.find("fix");
+        stop = playTape(tape, renderer, (i) => {
+          if (i === fixAt) setTagline(true);
+          if (i === tape.last) timer = window.setTimeout(advance, READ_TIME);
+        });
+      };
+      // Fade the mended sentence out and type the next one. Off screen, wait.
+      const advance = () => {
+        window.clearTimeout(timer);
+        if (!onScreen()) {
+          timer = window.setTimeout(advance, 1000);
+          return;
+        }
+        btn.classList.add("is-out");
+        timer = window.setTimeout(() => {
+          play(next());
+        }, FADE_TIME);
+      };
+      skip.current = advance;
+      timer = window.setTimeout(() => {
+        play(next());
+      }, 700);
 
       // The dark problem panel slides over the hero, which stays pinned and recedes.
       ScrollTrigger.create({
@@ -97,8 +97,7 @@ export function Hero() {
       root.addEventListener("pointermove", weight);
 
       return () => {
-        window.clearTimeout(start);
-        window.clearTimeout(again);
+        window.clearTimeout(timer);
         stop();
         root.removeEventListener("pointermove", weight);
       };
@@ -112,14 +111,15 @@ export function Hero() {
         <button
           type="button"
           className="hero-line"
-          aria-label="明天我因該會準時到。Typomend 把「因該」改成「應該」。按一下再打一次。"
+          ref={button}
+          aria-label="示範：在你打字的同時，Typomend 把選錯的同音字原地改好。按一下換下一句。"
           onClick={() => {
-            replay.current();
+            skip.current();
           }}
         >
           <span ref={line} aria-hidden="true" />
         </button>
-        <h1 className={`hero-tag${badge ? "" : " is-hidden"}`}>
+        <h1 className={`hero-tag${tagline ? "" : " is-hidden"}`}>
           照常輸入，原地修正。
         </h1>
       </div>

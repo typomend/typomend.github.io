@@ -36,6 +36,8 @@ Typomend 的官方網站，部署在 <https://typomend.github.io/>。整頁照�
 | `src/lib/motion.ts`           | GSAP 註冊、釘選時間軸 `pinnedTimeline`、只在往下捲時播放的 `cue`                                                                                      |
 | `src/lib/scenes.ts`           | S1 到 S7 的影片時間與對應的捲動位置                                                                                                                   |
 | `src/lib/rules.ts`            | 「自己打打看」使用的小型規則清單                                                                                                                      |
+| `src/lib/examples.ts`         | 首屏輪流播放的 13 個同音錯字範例，隨機排序、不連續重複                                                                                                |
+| `src/lib/reveal.ts`           | 按鈕的 reveal light：游標附近的邊框發光、游標下的表面被照亮，參考 Fluent Design 的 Reveal Highlight                                                   |
 | `src/styles/site.css`         | 全站樣式；顏色都是 CIS 的四個品牌色                                                                                                                   |
 | `public/logo/`、`src/assets/` | CIS 的標誌 SVG                                                                                                                                        |
 
@@ -43,7 +45,7 @@ Typomend 的官方網站，部署在 <https://typomend.github.io/>。整頁照�
 
 - 每個釘選場景用 `pinnedTimeline(section, 長度vh)` 建立一條跟著捲動走的時間軸，時間軸的單位只是相對長度，實際捲動距離由 `長度vh` 決定。
 - 打字畫面是一串預先算好的影格（`Tape`），捲動進度對應到影格編號，所以往回捲也會正確倒帶。
-- 音效預設關閉，按右上角的「聲音」才會載入；只在往下捲時播放。
+- 音效預設關閉，按右上角的聲音按鈕才會載入；捲動場景裡的音效只在往下捲時播放。音效的來源與設計見 `typomend_ae/DESIGN.md`。
 - 系統開啟「減少動態效果」時，`index.html` 不會加上 `motion` class，所有場景改成直接顯示最後的畫面，不釘選也不播動畫。
 
 ## 程式碼規範

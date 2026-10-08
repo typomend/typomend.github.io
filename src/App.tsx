@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Hud } from "./components/Hud";
 import { Timeline } from "./components/Timeline";
 import { ScrollTrigger } from "./lib/motion";
+import { startRevealLight } from "./lib/reveal";
 import { startSmoothScroll } from "./lib/scroll";
 import { Apps } from "./sections/Apps";
 import { Control } from "./sections/Control";
@@ -20,11 +21,15 @@ export function App() {
     history.scrollRestoration = "manual";
     window.scrollTo(0, 0);
     const stop = startSmoothScroll();
+    const stopReveal = startRevealLight();
     // Pin lengths depend on the web font's metrics, so measure again once it has loaded.
     void document.fonts.ready.then(() => {
       ScrollTrigger.refresh();
     });
-    return stop;
+    return () => {
+      stop();
+      stopReveal();
+    };
   }, []);
 
   return (
