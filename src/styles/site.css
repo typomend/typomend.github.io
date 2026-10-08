@@ -2205,7 +2205,7 @@ section {
     background-color 0.2s;
 }
 .chip:hover {
-  border-color: var(--blue);
+  border-color: color-mix(in srgb, var(--ink) 35%, transparent);
 }
 .chip.ghost {
   background: transparent;
@@ -2564,14 +2564,16 @@ section {
   gap: 6px;
 }
 
-/* Reveal light: the pointer lights nearby edges and the face under it */
+/* Reveal light, after Fluent's Reveal Highlight: the pointer lights nearby
+   edges and the face under it. The light is achromatic, as in Fluent: white
+   on the blue button and on dark surfaces, a light gray on light ones. */
 .btn,
 .hud-download,
 .hud-icon,
 .chip,
 .hud-nav a {
-  --reveal-face: rgba(37, 99, 235, 0.12);
-  --reveal-edge: rgba(37, 99, 235, 0.85);
+  --reveal-face: rgba(11, 15, 26, 0.05);
+  --reveal-edge: rgba(11, 15, 26, 0.3);
   position: relative;
   isolation: isolate;
 }
@@ -2580,8 +2582,8 @@ section {
 .hud-nav a.is-on,
 .hud[data-tone="dark"] .hud-icon,
 .hud[data-tone="dark"] .hud-nav a {
-  --reveal-face: rgba(255, 255, 255, 0.26);
-  --reveal-edge: rgba(255, 255, 255, 0.95);
+  --reveal-face: rgba(255, 255, 255, 0.16);
+  --reveal-edge: rgba(255, 255, 255, 0.6);
 }
 .btn::before,
 .hud-download::before,
@@ -2608,7 +2610,7 @@ section {
 .hud-nav a::before {
   z-index: -1;
   background: radial-gradient(
-    circle 90px at var(--rx, -999px) var(--ry, -999px),
+    circle 80px at var(--rx, -999px) var(--ry, -999px),
     var(--reveal-face),
     transparent 70%
   );
@@ -2620,7 +2622,7 @@ section {
 .hud-nav a::after {
   padding: 1.5px;
   background: radial-gradient(
-    circle 70px at var(--rx, -999px) var(--ry, -999px),
+    circle 60px at var(--rx, -999px) var(--ry, -999px),
     var(--reveal-edge),
     transparent 75%
   );

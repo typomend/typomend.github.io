@@ -32,7 +32,7 @@ export function Hero() {
       const next = exampleDeck();
       let stop: () => void = () => undefined;
       let timer = 0;
-      const onScreen = () => window.scrollY < window.innerHeight * 0.4;
+      let paused = false;
 
       const play = (tape: Tape) => {
         stop();
@@ -43,22 +43,38 @@ export function Hero() {
           if (i === tape.last) timer = window.setTimeout(advance, READ_TIME);
         });
       };
-      // Fade the mended sentence out and type the next one. Off screen, wait.
+      // Fade the mended sentence out and type the next one.
       const advance = () => {
         window.clearTimeout(timer);
-        if (!onScreen()) {
-          timer = window.setTimeout(advance, 1000);
-          return;
-        }
+        if (paused) return;
         btn.classList.add("is-out");
         timer = window.setTimeout(() => {
           play(next());
         }, FADE_TIME);
       };
+      // Scrolled off the first screen, the demo and its sounds stop at once;
+      // back on it, a new sentence starts.
+      const pause = () => {
+        paused = true;
+        window.clearTimeout(timer);
+        stop();
+      };
+      const resume = () => {
+        if (!paused) return;
+        paused = false;
+        advance();
+      };
       skip.current = advance;
       timer = window.setTimeout(() => {
         play(next());
       }, 700);
+      ScrollTrigger.create({
+        trigger: root,
+        start: "top top",
+        end: () => `+=${window.innerHeight * 0.4}`,
+        onLeave: pause,
+        onEnterBack: resume,
+      });
 
       // The dark problem panel slides over the hero, which stays pinned and recedes.
       ScrollTrigger.create({
