@@ -64,7 +64,7 @@ export function Timeline() {
   return (
     <nav className="timeline" data-tone={tone} aria-label="影片時間軸">
       <div className="tl-scene" aria-live="polite">
-        <b>{current?.code}</b> <span>{current?.name}</span>
+        <span>{current?.name}</span>
       </div>
       <div className="tl-track">
         <div className="tl-fill" ref={fill} />
@@ -78,14 +78,12 @@ export function Timeline() {
                 type="button"
                 className={i <= scene ? "is-past" : undefined}
                 style={{ left: `${share * 100}%` }}
-                aria-label={`${s.code} ${s.name}`}
+                aria-label={s.name}
                 onClick={() => {
                   scrollToY((positions.current[i] ?? 0) + 2);
                 }}
               >
-                <span aria-hidden="true">
-                  {s.code} {s.name}
-                </span>
+                <span aria-hidden="true">{s.name}</span>
               </button>
             );
           })}

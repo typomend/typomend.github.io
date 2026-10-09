@@ -4,15 +4,16 @@ Typomend 的官方網站，部署在 <https://typomend.github.io/>。整頁照�
 
 ## 快速對照
 
-| 我要                 | 做法                                      |
-| -------------------- | ----------------------------------------- |
-| 安裝相依套件         | `pnpm install`                            |
-| 本機開發             | `pnpm dev`，開啟 <http://localhost:5173/> |
-| 自動修正 lint 與排版 | `pnpm lint:fix`                           |
-| 跑完 CI 會檢查的項目 | `pnpm check`（型別、ESLint、Prettier）    |
-| 建置正式版           | `pnpm build`，輸出到 `dist/`              |
-| 預覽正式版           | `pnpm preview`                            |
-| 改下載與 GitHub 連結 | `src/lib/links.ts`                        |
+| 我要                 | 做法                                                                                            |
+| -------------------- | ----------------------------------------------------------------------------------------------- |
+| 安裝相依套件         | `pnpm install`                                                                                  |
+| 本機開發             | `pnpm dev`，開啟 <http://localhost:5173/>                                                       |
+| 自動修正 lint 與排版 | `pnpm lint:fix`                                                                                 |
+| 跑完 CI 會檢查的項目 | `pnpm check`（型別、ESLint、Prettier）                                                          |
+| 跑 e2e 測試          | `pnpm test:e2e`；第一次先執行 `pnpm exec playwright install chromium`。截圖存在 `test-results/` |
+| 建置正式版           | `pnpm build`，輸出到 `dist/`                                                                    |
+| 預覽正式版           | `pnpm preview`                                                                                  |
+| 改下載與 GitHub 連結 | `src/lib/links.ts`                                                                              |
 
 需要 Node.js 22.12 以上與 pnpm。`package.json` 的 `packageManager` 欄位指定了 pnpm 版本，執行一次 `corepack enable pnpm` 就會自動使用正確版本。
 
@@ -28,24 +29,25 @@ Typomend 的官方網站，部署在 <https://typomend.github.io/>。整頁照�
 
 ## 專案結構
 
-| 路徑                          | 內容                                                                                                                                                  |
-| ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `src/sections/`               | 每個場景一個元件：`Hero`（S1）、`Problem` 與 `Stop`（S2）、`Meet`（S3）、`World`（S4、S5）、`Apps`、`Punch`、`Control`（S6）、`TryIt`、`Finale`（S7） |
-| `src/components/`             | 頂端列 `Hud`、底部時間軸 `Timeline`、內嵌標誌 `Lockup`、GitHub 圖示 `GitHubMark`                                                                      |
-| `src/lib/tape.ts`             | 打字引擎：先出現注音、轉成組字中的國字、送出，再標出錯字並原地替換，和影片的 `Typer` 相同                                                             |
-| `src/lib/motion.ts`           | GSAP 註冊、釘選時間軸 `pinnedTimeline`、只在往下捲時播放的 `cue`                                                                                      |
-| `src/lib/scenes.ts`           | S1 到 S7 的影片時間與對應的捲動位置                                                                                                                   |
-| `src/lib/rules.ts`            | 「自己打打看」使用的小型規則清單                                                                                                                      |
-| `src/lib/examples.ts`         | 首屏輪流播放的 13 個同音錯字範例，隨機排序、不連續重複                                                                                                |
-| `src/lib/reveal.ts`           | 按鈕的 reveal light：游標附近的邊框發光、游標下的表面被照亮，參考 Fluent Design 的 Reveal Highlight                                                   |
-| `src/styles/site.css`         | 全站樣式；顏色都是 CIS 的四個品牌色                                                                                                                   |
-| `public/logo/`、`src/assets/` | CIS 的標誌 SVG                                                                                                                                        |
+| 路徑                           | 內容                                                                                                                                                  |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/sections/`                | 每個場景一個元件：`Hero`（S1）、`Problem` 與 `Stop`（S2）、`Meet`（S3）、`World`（S4、S5）、`Apps`、`Punch`、`Control`（S6）、`TryIt`、`Finale`（S7） |
+| `src/components/`              | 頂端列 `Hud`、底部時間軸 `Timeline`、內嵌標誌 `Lockup`、GitHub 圖示 `GitHubMark`                                                                      |
+| `src/lib/tape.ts`              | 打字引擎：先出現注音、轉成組字中的國字、送出，再標出錯字並原地替換，和影片的 `Typer` 相同                                                             |
+| `src/lib/motion.ts`            | GSAP 註冊、釘選時間軸 `pinnedTimeline`、只在往下捲時播放的 `cue`                                                                                      |
+| `src/lib/scenes.ts`            | S1 到 S7 的影片時間與對應的捲動位置                                                                                                                   |
+| `src/lib/rules.ts`             | 「自己打打看」使用的小型規則清單                                                                                                                      |
+| `src/lib/examples.ts`          | 首屏輪流播放的 13 個同音錯字範例，隨機排序、不連續重複                                                                                                |
+| `src/lib/glass.ts`             | Liquid Glass 按鈕的游標光：靠近時邊緣的高光轉向游標、懸停時由內發光、按下時光擴散到整顆按鈕與附近的玻璃                                               |
+| `src/components/GlassLens.tsx` | 玻璃邊緣折射用的 SVG 濾鏡，只在 Chromium 啟用，其他瀏覽器維持霧面                                                                                     |
+| `src/styles/site.css`          | 全站樣式；顏色都是 CIS 的四個品牌色                                                                                                                   |
+| `public/logo/`、`src/assets/`  | CIS 的標誌 SVG                                                                                                                                        |
 
 ### 動畫怎麼寫
 
 - 每個釘選場景用 `pinnedTimeline(section, 長度vh)` 建立一條跟著捲動走的時間軸，時間軸的單位只是相對長度，實際捲動距離由 `長度vh` 決定。
 - 打字畫面是一串預先算好的影格（`Tape`），捲動進度對應到影格編號，所以往回捲也會正確倒帶。
-- 音效預設關閉，按右上角的聲音按鈕才會載入；捲動場景裡的音效只在往下捲時播放。音效的來源與設計見 `typomend_ae/DESIGN.md`。
+- 音效預設開啟，右上角的聲音按鈕可以關閉，選擇會記在瀏覽器裡，下次造訪沿用。瀏覽器規定要等使用者第一次點擊、觸控或按鍵後才能出聲，所以在那之前不會有聲音。捲動場景裡的音效只在往下捲時播放。音效的來源與設計見 `typomend_ae/DESIGN.md`。
 - 系統開啟「減少動態效果」時，`index.html` 不會加上 `motion` class，所有場景改成直接顯示最後的畫面，不釘選也不播動畫。
 
 ## 程式碼規範
@@ -56,6 +58,7 @@ Typomend 的官方網站，部署在 <https://typomend.github.io/>。整頁照�
 | 程式碼品質  | ESLint 10 flat config：`typescript-eslint` 的 `strictTypeChecked` 與 `stylisticTypeChecked`、React Hooks、React Refresh                 | pre-commit hook、CI |
 | 無障礙      | `eslint-plugin-jsx-a11y` 的 `strict` 規則                                                                                               | pre-commit hook、CI |
 | 排版        | Prettier 預設值，搭配 `eslint-config-prettier` 避免規則衝突                                                                             | pre-commit hook、CI |
+| 互動與外觀  | Playwright e2e 測試（`e2e/`），對正式版建置截圖並檢查玻璃按鈕的各種狀態                                                                 | 手動執行            |
 | Commit 訊息 | commitlint 的 `@commitlint/config-conventional`，遵循 [Conventional Commits 1.0.0](https://www.conventionalcommits.org/zh-hant/v1.0.0/) | commit-msg hook     |
 | 編輯器設定  | `.editorconfig`：UTF-8、LF、兩格空白縮排                                                                                                | 編輯器              |
 

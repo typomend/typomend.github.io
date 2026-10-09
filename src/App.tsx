@@ -1,8 +1,9 @@
 import { useEffect } from "react";
+import { GlassLens } from "./components/GlassLens";
 import { Hud } from "./components/Hud";
 import { Timeline } from "./components/Timeline";
 import { ScrollTrigger } from "./lib/motion";
-import { startRevealLight } from "./lib/reveal";
+import { startGlass } from "./lib/glass";
 import { startSmoothScroll } from "./lib/scroll";
 import { Apps } from "./sections/Apps";
 import { Control } from "./sections/Control";
@@ -21,14 +22,14 @@ export function App() {
     history.scrollRestoration = "manual";
     window.scrollTo(0, 0);
     const stop = startSmoothScroll();
-    const stopReveal = startRevealLight();
+    const stopGlass = startGlass();
     // Pin lengths depend on the web font's metrics, so measure again once it has loaded.
     void document.fonts.ready.then(() => {
       ScrollTrigger.refresh();
     });
     return () => {
       stop();
-      stopReveal();
+      stopGlass();
     };
   }, []);
 
@@ -37,6 +38,7 @@ export function App() {
       <a className="skip" href="#try">
         跳到「自己打打看」
       </a>
+      <GlassLens />
       <Hud />
       <Timeline />
       <main id="top">

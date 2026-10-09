@@ -187,19 +187,20 @@ button {
 }
 .hud-nav {
   display: flex;
-  gap: 4px;
+  gap: 2px;
   margin-left: auto;
+  padding: 4px;
+  border-radius: 999px;
 }
 .hud-nav a {
+  position: relative;
   text-decoration: none;
   font-size: 14px;
-  padding: 6px 12px;
+  padding: 6px 14px;
   border-radius: 999px;
-  transition: background-color 0.2s;
-}
-.hud-nav a.is-on {
-  background: var(--blue);
-  color: var(--paper);
+  transition:
+    background-color 0.3s,
+    color 0.3s;
 }
 .hud-actions {
   display: flex;
@@ -212,15 +213,9 @@ button {
   height: 36px;
   padding: 0 18px;
   border-radius: 999px;
-  background: var(--blue);
-  color: var(--paper);
   font-size: 14px;
   font-weight: 700;
   text-decoration: none;
-  transition: background-color 0.2s;
-}
-.hud-download:hover {
-  background: #1d4fd8;
 }
 .hud-icon {
   display: inline-grid;
@@ -228,17 +223,10 @@ button {
   width: 36px;
   height: 36px;
   padding: 0;
+  border: 0;
   border-radius: 50%;
-  border: 1px solid color-mix(in srgb, currentColor 25%, transparent);
-  background: transparent;
   color: inherit;
   cursor: pointer;
-  transition:
-    border-color 0.2s,
-    background-color 0.2s;
-}
-.hud-icon:hover {
-  border-color: currentColor;
 }
 .sound-bars {
   display: inline-flex;
@@ -443,24 +431,9 @@ section {
   font-size: 15px;
   font-weight: 700;
   text-decoration: none;
-  transition:
-    background-color 0.25s,
-    box-shadow 0.25s;
-}
-.btn-primary {
-  background: var(--blue);
-  color: var(--paper);
-  box-shadow: 0 10px 30px -12px rgba(37, 99, 235, 0.7);
-}
-.btn-primary:hover {
-  background: #1d4fd8;
 }
 .btn-ghost {
-  border: 1px solid var(--rule);
-  background: var(--paper);
-}
-.btn-ghost:hover {
-  border-color: var(--ink);
+  color: var(--ink);
 }
 .cta-row {
   display: flex;
@@ -611,8 +584,16 @@ section {
 .hero-line .caret {
   width: 0.05em;
 }
+.hero-title {
+  max-width: 22em;
+  font-size: clamp(18px, 2vw, 28px);
+  font-weight: 700;
+  line-height: 1.45;
+  text-wrap: balance;
+}
 .hero-tag {
-  font-size: clamp(15px, 1.4vw, 20px);
+  margin-top: -0.4em;
+  font-size: clamp(13px, 1.1vw, 16px);
   font-weight: 500;
   letter-spacing: 0.3em;
   color: var(--muted);
@@ -1048,7 +1029,7 @@ section {
   overflow: visible;
 }
 .meet .lockup {
-  width: min(760px, 78vw);
+  width: min(760px, 78vw, (100svh - 260px) * 4.4);
 }
 
 /* ---------- S4/S5 World ---------- */
@@ -2195,20 +2176,11 @@ section {
 .chip {
   height: 36px;
   padding: 0 14px;
+  border: 0;
   border-radius: 999px;
-  border: 1px solid var(--rule);
-  background: var(--paper);
+  color: var(--ink);
   cursor: pointer;
   font-size: 14px;
-  transition:
-    border-color 0.2s,
-    background-color 0.2s;
-}
-.chip:hover {
-  border-color: color-mix(in srgb, var(--ink) 35%, transparent);
-}
-.chip.ghost {
-  background: transparent;
 }
 .chip:disabled {
   opacity: 0.5;
@@ -2293,7 +2265,7 @@ section {
   text-align: center;
 }
 .finale .lockup {
-  width: min(900px, 84vw);
+  width: min(900px, 84vw, (100svh - 280px) * 4.4);
 }
 .finale-tag {
   font-size: clamp(24px, 3vw, 44px);
@@ -2504,6 +2476,7 @@ section {
 /* CJK headlines break at punctuation and spaces, not inside a phrase */
 .cap,
 .world-cap,
+.hero-title,
 .hero-tag,
 .control-head h2,
 .compare h2,
@@ -2550,6 +2523,18 @@ section {
   opacity: 0;
   visibility: hidden;
 }
+/* At the end of the page the film is over: the timeline tucks away. */
+.timeline {
+  transition:
+    opacity 0.5s var(--ease-snap),
+    visibility 0.5s,
+    transform 0.5s var(--ease-snap);
+}
+[data-ending="true"] .timeline {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(24px);
+}
 
 .gh-mark {
   display: block;
@@ -2564,68 +2549,185 @@ section {
   gap: 6px;
 }
 
-/* Reveal light, after Fluent's Reveal Highlight: the pointer lights nearby
-   edges and the face under it. The light is achromatic, as in Fluent: white
-   on the blue button and on dark surfaces, a light gray on light ones. */
-.btn,
-.hud-download,
-.hud-icon,
-.chip,
-.hud-nav a {
-  --reveal-face: rgba(11, 15, 26, 0.05);
-  --reveal-edge: rgba(11, 15, 26, 0.3);
+/* ---------- Liquid Glass ----------
+   After Apple's Liquid Glass (Meet Liquid Glass, WWDC25), with its feedback
+   read as a reveal light:
+   - the material: a translucent fill over a blurred, saturated backdrop,
+     bent near the rim where the browser can (Chromium, see GlassLens), with
+     a specular rim lit from above and a soft shadow that lifts it off the
+     page;
+   - near the pointer, the rim catches the light on the side facing it, so
+     highlights travel around the silhouette and nearby glass lights too;
+   - on hover the glass illuminates from within, from under the pointer;
+   - on press the glow spreads through the whole control, it flexes with a
+     spring, and a brief glow reaches the glass around it. No ripple.
+   Regular glass for most controls; tinted glass only for the main action. */
+@property --glow-r {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+@property --glow-a {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 0;
+}
+@property --rim-a {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 0;
+}
+.glass {
+  --glass-fill: rgb(226 231 239 / 0.62);
+  --glass-outline: rgb(11 15 26 / 0.08);
+  --glass-top: rgb(255 255 255 / 0.95);
+  --glass-bottom: rgb(255 255 255 / 0.55);
+  --glass-inner-light: rgb(255 255 255 / 0.85);
+  --glass-inner-shade: rgb(11 15 26 / 0.09);
+  --glass-sheen: 0.3;
+  --glass-shadow:
+    0 1px 2px rgb(11 15 26 / 0.06), 0 8px 22px -12px rgb(11 15 26 / 0.3);
+  /* The light: what the rim catches near the pointer, and the glow inside. */
+  --glass-rim-light: 11 15 26;
+  --glass-rim-max: 0.24;
+  --glass-hover-rim: 1;
+  --glass-rim-floor: transparent;
+  --glass-rim-bounce: 0.38;
+  --glass-glow: 255 255 255;
+  --glass-glow-max: 1;
   position: relative;
   isolation: isolate;
+  background: var(--glass-fill);
+  -webkit-backdrop-filter: blur(14px) saturate(180%);
+  backdrop-filter: blur(14px) saturate(180%);
+  box-shadow:
+    inset 0 1px 0.5px var(--glass-top),
+    inset 0 -1px 1px var(--glass-bottom),
+    inset 0 10px 12px -12px var(--glass-inner-light),
+    inset 0 -10px 14px -12px var(--glass-inner-shade),
+    inset 0 0 0 1px var(--glass-outline),
+    var(--glass-shadow);
+  transition:
+    transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.3s,
+    background 0.3s;
 }
-.btn-primary,
-.hud-download,
-.hud-nav a.is-on,
-.hud[data-tone="dark"] .hud-icon,
-.hud[data-tone="dark"] .hud-nav a {
-  --reveal-face: rgba(255, 255, 255, 0.16);
-  --reveal-edge: rgba(255, 255, 255, 0.6);
+.glass-lens .glass {
+  -webkit-backdrop-filter: url(#glass-lens) blur(5px) saturate(180%);
+  backdrop-filter: url(#glass-lens) blur(5px) saturate(180%);
 }
-.btn::before,
-.hud-download::before,
-.hud-icon::before,
-.chip::before,
-.hud-nav a::before,
-.btn::after,
-.hud-download::after,
-.hud-icon::after,
-.chip::after,
-.hud-nav a::after {
+
+/* Tinted glass: the main action only. */
+.glass-tint {
+  --glass-fill: linear-gradient(
+    180deg,
+    rgb(66 128 255 / 0.88),
+    rgb(37 99 235 / 0.9)
+  );
+  --glass-outline: rgb(16 54 160 / 0.32);
+  --glass-top: rgb(255 255 255 / 0.55);
+  --glass-bottom: rgb(255 255 255 / 0.1);
+  --glass-inner-light: rgb(255 255 255 / 0.35);
+  --glass-inner-shade: rgb(10 40 140 / 0.25);
+  --glass-sheen: 0.12;
+  --glass-shadow:
+    0 1px 2px rgb(37 99 235 / 0.25), 0 10px 24px -12px rgb(37 99 235 / 0.7);
+  --glass-rim-light: 255 255 255;
+  --glass-rim-max: 0.85;
+  --glass-hover-rim: 0.55;
+  --glass-rim-floor: rgb(37 99 235);
+  --glass-rim-bounce: 0.1;
+  --glass-glow: 214 230 255;
+  --glass-glow-max: 0.3;
+  color: var(--paper);
+}
+
+/* Over dark scenes the same glass is darker and its light is white. */
+.hud[data-tone="dark"] .glass:not(.glass-tint) {
+  --glass-fill: rgb(255 255 255 / 0.08);
+  --glass-outline: rgb(255 255 255 / 0.12);
+  --glass-top: rgb(255 255 255 / 0.32);
+  --glass-bottom: rgb(255 255 255 / 0.1);
+  --glass-inner-light: rgb(255 255 255 / 0.12);
+  --glass-inner-shade: rgb(0 0 0 / 0.25);
+  --glass-sheen: 0.1;
+  --glass-shadow: 0 8px 24px -10px rgb(0 0 0 / 0.6);
+  --glass-rim-light: 255 255 255;
+  --glass-rim-max: 0.7;
+  --glass-hover-rim: 0.65;
+  --glass-rim-floor: rgb(24 28 40);
+  --glass-rim-bounce: 0.12;
+  --glass-glow-max: 0.34;
+}
+
+/* Inside: a sheen on the upper half, and the light from within. */
+.glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      circle var(--glow-r) at var(--lx, 50%) var(--ly, 50%),
+      rgb(var(--glass-glow) / calc(var(--glass-glow-max) * var(--glow-a))),
+      rgb(var(--glass-glow) / 0) 100%
+    ),
+    linear-gradient(
+      180deg,
+      rgb(255 255 255 / var(--glass-sheen)),
+      rgb(255 255 255 / 0) 55%
+    );
+  transition:
+    --glow-r 0.5s cubic-bezier(0.1, 0.9, 0.2, 1),
+    --glow-a 0.35s ease;
+}
+.glass:hover::before {
+  --glow-r: 72px;
+  --glow-a: 0.85;
+}
+/* Larger controls carry a wider light, so it fills them as it does the icons. */
+.btn.glass:hover::before {
+  --glow-r: 130px;
+}
+.glass[data-echo]::before {
+  --glow-r: 90px;
+  --glow-a: 0.55;
+  transition-duration: 0.15s;
+}
+.glass:active::before {
+  --glow-r: 260px;
+  --glow-a: 1;
+  transition-duration: 0.3s, 0.12s;
+}
+.glass:active {
+  transform: scale(1.045);
+  transition-duration: 0.25s, 0.3s, 0.3s;
+}
+
+/* The rim: a 1 px ring lit from above, and from the pointer when near. */
+.glass::after {
   content: "";
   position: absolute;
   inset: 0;
   border-radius: inherit;
   pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-.btn::before,
-.hud-download::before,
-.hud-icon::before,
-.chip::before,
-.hud-nav a::before {
-  z-index: -1;
-  background: radial-gradient(
-    circle 80px at var(--rx, -999px) var(--ry, -999px),
-    var(--reveal-face),
-    transparent 70%
-  );
-}
-.btn::after,
-.hud-download::after,
-.hud-icon::after,
-.chip::after,
-.hud-nav a::after {
-  padding: 1.5px;
-  background: radial-gradient(
-    circle 60px at var(--rx, -999px) var(--ry, -999px),
-    var(--reveal-edge),
-    transparent 75%
-  );
+  padding: 1px;
+  background:
+    linear-gradient(180deg, transparent 40%, var(--glass-rim-floor) 100%),
+    radial-gradient(
+      circle 64px at var(--lx, -999px) var(--ly, -999px),
+      rgb(var(--glass-rim-light) / calc(var(--glass-rim-max) * var(--rim-a))),
+      rgb(var(--glass-rim-light) / 0) 100%
+    ),
+    linear-gradient(
+      165deg,
+      rgb(255 255 255 / 0.85),
+      rgb(255 255 255 / 0.08) 38%,
+      rgb(255 255 255 / 0.04) 62%,
+      rgb(255 255 255 / var(--glass-rim-bounce))
+    );
   -webkit-mask:
     linear-gradient(#000 0 0) content-box,
     linear-gradient(#000 0 0);
@@ -2634,38 +2736,120 @@ section {
     linear-gradient(#000 0 0) content-box,
     linear-gradient(#000 0 0);
   mask-composite: exclude;
+  transition: --rim-a 0.3s ease;
 }
-[data-reveal="on"] .btn::after,
-[data-reveal="on"] .hud-download::after,
-[data-reveal="on"] .hud-icon::after,
-[data-reveal="on"] .chip::after,
-[data-reveal="on"] .hud-nav a::after,
-.btn:hover::before,
-.hud-download:hover::before,
-.hud-icon:hover::before,
-.chip:hover::before,
-.hud-nav a:hover::before {
-  opacity: 1;
+.glass[data-near]::after {
+  --rim-a: 1;
 }
-.btn:active::before,
-.hud-download:active::before,
-.hud-icon:active::before,
-.chip:active::before,
-.hud-nav a:active::before {
-  background: radial-gradient(
-    circle 150px at var(--rx, -999px) var(--ry, -999px),
-    var(--reveal-face),
-    transparent 75%
-  );
+/* The control under the pointer is lit from within: its rim catches white
+   light from above, and its shadow deepens so it lifts off the page without
+   moving. */
+.glass:hover::after {
+  --glass-rim-light: 255 255 255;
+  --glass-rim-max: var(--glass-hover-rim);
+}
+.glass:hover {
+  --glass-shadow:
+    0 0 0 1px rgb(255 255 255 / 0.9), 0 0 18px 2px rgb(255 255 255 / 0.85),
+    0 1px 2px rgb(11 15 26 / 0.08), 0 12px 28px -12px rgb(11 15 26 / 0.38);
+}
+/* Over dark scenes the halo is a soft bloom, never a hard ring. */
+.hud[data-tone="dark"] .glass:not(.glass-tint):hover {
+  --glass-shadow:
+    0 0 18px rgb(255 255 255 / 0.16), 0 8px 24px -10px rgb(0 0 0 / 0.6);
+}
+.glass-tint:hover {
+  --glass-shadow:
+    0 1px 2px rgb(37 99 235 / 0.3), 0 14px 30px -12px rgb(37 99 235 / 0.85);
+}
+
+/* The chapter capsule: the selected chapter sits on a brighter lens. */
+.hud-nav a.is-on {
+  color: var(--blue);
+  font-weight: 700;
+  background: rgb(255 255 255 / 0.85);
+  box-shadow:
+    inset 0 1px 0.5px rgb(255 255 255 / 0.95),
+    0 1px 3px rgb(11 15 26 / 0.12);
+}
+.hud[data-tone="dark"] .hud-nav a.is-on {
+  color: var(--light);
+  background: rgb(255 255 255 / 0.16);
+  box-shadow: inset 0 1px 0.5px rgb(255 255 255 / 0.3);
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .glass,
+  .glass-lens .glass {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    --glass-fill: var(--paper);
+  }
+  .glass-tint {
+    --glass-fill: var(--blue);
+  }
+  .hud[data-tone="dark"] .glass:not(.glass-tint) {
+    --glass-fill: var(--ink-2);
+  }
+}
+@media (prefers-contrast: more) {
+  .glass {
+    --glass-outline: rgb(11 15 26 / 0.6);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .glass:active {
+    transform: none;
+  }
 }
 
 /* The first screen fades one mended sentence out before typing the next */
-.hero-line {
-  transition:
-    opacity 0.45s var(--ease-snap),
-    filter 0.45s var(--ease-snap);
-}
 .hero-line.is-out {
   opacity: 0;
   filter: blur(6px);
+}
+
+/* Touch screens: the top bar's controls get Apple's 44 pt tap target. */
+@media (pointer: coarse) {
+  .hud-icon {
+    width: 44px;
+    height: 44px;
+  }
+  .hud-download {
+    height: 44px;
+    padding: 0 20px;
+  }
+}
+
+/* First screen: a click selects the sentence, then deletes it. */
+.hero-line:active {
+  transform: scale(0.985);
+}
+.hero-line {
+  transition:
+    opacity 0.45s var(--ease-snap),
+    filter 0.45s var(--ease-snap),
+    transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.hero-line .tk {
+  transition:
+    background-color 0.12s ease var(--d, 0ms),
+    opacity 0.28s ease var(--d, 0ms),
+    transform 0.32s var(--ease-snap) var(--d, 0ms),
+    filter 0.28s ease var(--d, 0ms);
+}
+.hero-line .tk.sel {
+  background-color: rgb(147 197 253 / 0.55);
+}
+/* One continuous band, as a text selection is, rounded only at its ends. */
+.hero-line .tk:first-child {
+  border-radius: 0.08em 0 0 0.08em;
+}
+.hero-line .tk:nth-last-child(2) {
+  border-radius: 0 0.08em 0.08em 0;
+}
+.hero-line .tk.del {
+  opacity: 0;
+  transform: translateY(-0.28em) scale(0.92);
+  filter: blur(5px);
 }

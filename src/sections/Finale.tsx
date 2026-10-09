@@ -102,7 +102,7 @@ export function Finale() {
           </p>
           <div className="cta-row finale-cta">
             <a
-              className="btn btn-primary"
+              className="btn btn-primary glass glass-tint"
               href={RELEASES_URL}
               target="_blank"
               rel="noreferrer"
@@ -110,7 +110,7 @@ export function Finale() {
               下載最新版本
             </a>
             <a
-              className="btn btn-ghost"
+              className="btn btn-ghost glass"
               href={REPO_URL}
               target="_blank"
               rel="noreferrer"

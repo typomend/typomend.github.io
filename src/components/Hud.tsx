@@ -29,6 +29,11 @@ export function Hud() {
       document.documentElement.dataset.arrival = String(
         window.scrollY < window.innerHeight * 0.4,
       );
+      // Once the footer comes into view, the film's timeline is done.
+      const foot = document.querySelector(".foot");
+      document.documentElement.dataset.ending = String(
+        foot !== null && foot.getBoundingClientRect().top < window.innerHeight,
+      );
     };
     const schedule = () => {
       if (!frame) frame = requestAnimationFrame(update);
@@ -66,7 +71,7 @@ export function Hud() {
           height="29"
         />
       </a>
-      <nav className="hud-nav" aria-label="章節">
+      <nav className="hud-nav glass" aria-label="章節">
         {NAV.map((item) => (
           <a
             key={item.href}
@@ -83,7 +88,7 @@ export function Hud() {
       </nav>
       <div className="hud-actions">
         <a
-          className="hud-download"
+          className="hud-download glass glass-tint"
           href={RELEASES_URL}
           target="_blank"
           rel="noreferrer"
@@ -91,7 +96,7 @@ export function Hud() {
           下載
         </a>
         <a
-          className="hud-icon"
+          className="hud-icon glass"
           href={REPO_URL}
           target="_blank"
           rel="noreferrer"
@@ -101,7 +106,7 @@ export function Hud() {
           <GitHubMark />
         </a>
         <button
-          className="hud-icon sound"
+          className="hud-icon glass sound"
           type="button"
           aria-pressed={soundOn}
           aria-label="聲音"

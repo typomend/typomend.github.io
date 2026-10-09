@@ -262,7 +262,7 @@ export function TryIt() {
               <button
                 key={sample.label}
                 type="button"
-                className="chip"
+                className="chip glass"
                 disabled={typing}
                 onClick={() => {
                   api.current?.say(sample.text);
@@ -273,7 +273,7 @@ export function TryIt() {
             ))}
             <button
               type="button"
-              className="chip ghost"
+              className="chip ghost glass"
               onClick={() => {
                 api.current?.clear();
               }}

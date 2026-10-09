@@ -1,5 +1,7 @@
-// The sounds come from the Typomend intro film. They stay off until the viewer
-// turns them on, because browsers only play audio after a user gesture.
+// The sounds come from the Typomend intro film. Sound is on unless the viewer
+// turned it off, and that choice is remembered across visits. Browsers only
+// start audio after the viewer interacts with the page, so nothing plays
+// until the first press, tap or key.
 
 const VOLUME = {
   key_tap: 0.35,
@@ -28,7 +30,25 @@ interface PlayOptions {
   rate?: number;
 }
 
-let enabled = false;
+const STORAGE_KEY = "typomend:sound";
+
+function remembered() {
+  try {
+    return localStorage.getItem(STORAGE_KEY) !== "off";
+  } catch {
+    return true;
+  }
+}
+
+function remember(on: boolean) {
+  try {
+    localStorage.setItem(STORAGE_KEY, on ? "on" : "off");
+  } catch {
+    // Storage can be blocked; the choice then lasts for this visit only.
+  }
+}
+
+let enabled = remembered();
 let loading = false;
 let context: AudioContext | null = null;
 let lastTap = 0;
@@ -93,8 +113,27 @@ function tap(name: SoundName = "key_tap") {
   });
 }
 
+const GESTURES = ["pointerdown", "keydown", "touchend"] as const;
+
+/** Starts audio on the first gesture, if sound is on. */
+function unlock() {
+  if (!enabled) return;
+  load();
+  const ctx = context;
+  if (!ctx) return;
+  void ctx.resume().then(() => {
+    GESTURES.forEach((g) => {
+      window.removeEventListener(g, unlock);
+    });
+  });
+}
+GESTURES.forEach((g) => {
+  window.addEventListener(g, unlock, { passive: true });
+});
+
 function setEnabled(on: boolean) {
   enabled = on;
+  remember(on);
   if (on) {
     load();
     if (context?.state === "suspended") void context.resume();

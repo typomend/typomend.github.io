@@ -23,14 +23,20 @@ interface Size {
   gap: number;
 }
 
-/** Desktop size in design pixels: wide on desktops, tall on phones held upright. */
+/**
+ * Desktop size in design pixels: tall on phones held upright, wide and flat
+ * on short screens such as a phone held sideways, 16:10 otherwise.
+ */
 function deskSize(): Size {
   const portrait =
     window.innerWidth <= 900 && window.innerWidth / window.innerHeight < 0.8;
-  return portrait
-    ? { w: 760, h: 1180, gap: 90 }
-    : { w: 1600, h: 1000, gap: 160 };
+  if (portrait) return { w: 760, h: 1180, gap: 90 };
+  if (window.innerHeight < 560) return { w: 1400, h: 720, gap: 140 };
+  return { w: 1600, h: 1000, gap: 160 };
 }
+
+/** Room kept clear above and below a desktop for the bars, in px. */
+const deskMargin = () => (window.innerHeight < 560 ? 96 : 140);
 
 const tapes = {
   np1: () =>
@@ -195,7 +201,7 @@ export function World() {
         z: Math.log(
           Math.min(
             (window.innerWidth * 0.94) / size.w,
-            (window.innerHeight - 140) / size.h,
+            (window.innerHeight - deskMargin()) / size.h,
           ),
         ),
       });
