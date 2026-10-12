@@ -1,0 +1,611 @@
+@import "./tokens.css";
+
+/* The guide pages, set like a type specimen that proofreads itself.
+   - A twelve-column grid in the Swiss manner: each chapter's heading holds
+     the left columns while its text runs on the right.
+   - Hairlines instead of boxes. A dark rule opens each table and figure.
+   - Ink on white, with the brand's proof marks as the only colour: Light
+     Blue behind a typo, Mend Blue for its fix.
+   - Large type does the work that icons and cards would do elsewhere. */
+
+:root {
+  --max: 1440px;
+  --cg: clamp(16px, 2vw, 32px);
+  --edge: max(var(--gutter), calc((100% - var(--max)) / 2 + var(--gutter)));
+  --hair: rgb(11 15 26 / 0.12);
+  --hair-dark: rgb(255 255 255 / 0.16);
+  --text: #283043;
+  --typo-bg: rgb(147 197 253 / 0.55);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+html {
+  -webkit-text-size-adjust: 100%;
+}
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--zh);
+  font-size: 18px;
+  line-height: 1.9;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+:lang(en) {
+  font-family: var(--en);
+}
+img,
+svg {
+  max-width: 100%;
+}
+a {
+  color: inherit;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.24em;
+}
+a:hover {
+  color: var(--blue);
+}
+:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+}
+::selection {
+  background: var(--light);
+  color: var(--ink);
+}
+p {
+  margin: 0;
+}
+:not(pre) > code {
+  padding: 0.08em 0.32em;
+  background: rgb(11 15 26 / 0.06);
+  font-family: var(--mono);
+  font-size: 0.86em;
+  overflow-wrap: anywhere;
+}
+/* The browser gives code its own monospace face, which inside pre would
+   override the brand's. */
+pre code {
+  font: inherit;
+}
+pre {
+  margin: 4px 0 28px;
+  padding: 18px 22px;
+  overflow-x: auto;
+  background: var(--ink);
+  color: #dfe6f3;
+  font: 14.5px/1.75 var(--mono);
+}
+
+.skip {
+  position: fixed;
+  left: 16px;
+  top: -60px;
+  z-index: 10;
+  padding: 8px 14px;
+  background: var(--ink);
+  color: var(--paper);
+}
+.skip:focus {
+  top: 12px;
+}
+
+/* ---------- The grid ---------- */
+.cover,
+.chapter,
+.signoff,
+.colophon {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--cg);
+  padding-inline: var(--edge);
+}
+
+/* ---------- Masthead: the logo, where you are, and the other guides ---------- */
+.mast {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 32px;
+  padding: 20px var(--edge);
+  border-bottom: 1px solid var(--hair);
+  font-size: 15px;
+  line-height: 1.5;
+}
+.mast-where {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.mast-logo img {
+  display: block;
+  width: auto;
+  height: 24px;
+}
+.mast-sep {
+  color: rgb(11 15 26 / 0.25);
+}
+.mast-here {
+  font-weight: 700;
+}
+.mast-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 24px;
+}
+.mast-nav a {
+  text-decoration: none;
+}
+.mast-nav a:hover {
+  text-decoration: underline;
+}
+.mast-nav a[aria-current="page"] {
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.4em;
+}
+.mast-download {
+  color: var(--blue);
+  font-weight: 700;
+}
+
+/* ---------- Cover: the specimen, the title and the standfirst ---------- */
+.cover {
+  padding-block: clamp(56px, 11vh, 132px) clamp(48px, 8vh, 96px);
+  border-bottom: 1px solid var(--ink);
+}
+.specimen {
+  grid-column: 1 / -1;
+  margin: 0;
+}
+.specimen-line {
+  font-size: clamp(
+    30px,
+    calc((min(100vw, var(--max)) - 2 * var(--gutter)) / var(--em, 10)),
+    168px
+  );
+  font-weight: 800;
+  line-height: 1.06;
+  letter-spacing: -0.02em;
+}
+.specimen-mend {
+  display: inline-grid;
+}
+.specimen-mend > * {
+  grid-area: 1 / 1;
+  text-decoration: none;
+}
+/* The typo arrives marked, then gives way to its fix in Mend Blue. */
+.specimen-mend del {
+  background: var(--typo-bg);
+  border-radius: 0.05em;
+  animation: proof-out 0.4s var(--ease-snap) 1.3s forwards;
+}
+.specimen-mend ins {
+  color: var(--blue);
+  opacity: 0;
+  animation: proof-in 0.5s var(--ease-snap) 1.45s forwards;
+}
+@keyframes proof-out {
+  to {
+    opacity: 0;
+    transform: translateY(-0.16em);
+  }
+}
+@keyframes proof-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.16em);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.specimen-caret {
+  display: inline-block;
+  width: 0.05em;
+  height: 0.86em;
+  margin-left: 0.04em;
+  vertical-align: -0.06em;
+  background: var(--blue);
+  animation: blink 1.06s steps(1) 2.6s 5;
+}
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .specimen-mend del {
+    animation: none;
+    opacity: 0;
+  }
+  .specimen-mend ins {
+    animation: none;
+    opacity: 1;
+  }
+  .specimen-caret {
+    animation: none;
+  }
+}
+.specimen-note {
+  margin-top: 20px;
+  color: var(--muted);
+  font: 500 14px/1.6 var(--mono);
+}
+.cover h1 {
+  grid-column: 1 / span 6;
+  margin: clamp(48px, 9vh, 104px) 0 0;
+  font-size: clamp(28px, 3.3vw, 48px);
+  font-weight: 800;
+  line-height: 1.28;
+  text-wrap: balance;
+}
+.cover .standfirst {
+  grid-column: 8 / span 5;
+  margin-top: clamp(48px, 9vh, 104px);
+  color: var(--text);
+  font-size: clamp(17px, 1.3vw, 20px);
+  line-height: 1.85;
+}
+
+/* ---------- Chapters ---------- */
+.chapter {
+  padding-block: clamp(56px, 9vh, 112px);
+  border-bottom: 1px solid var(--hair);
+}
+.chapter h2 {
+  grid-column: 1 / span 4;
+  position: sticky;
+  top: 32px;
+  align-self: start;
+  margin: 0;
+  font-size: clamp(22px, 2.1vw, 30px);
+  font-weight: 800;
+  line-height: 1.35;
+  text-wrap: balance;
+}
+.chapter-text {
+  grid-column: 6 / span 7;
+  min-width: 0;
+}
+.chapter-text > p {
+  margin-bottom: 1.15em;
+  color: var(--text);
+  text-wrap: pretty;
+}
+.chapter-text > p:last-child {
+  margin-bottom: 0;
+}
+.chapter-text .aside {
+  color: var(--muted);
+  font-size: 14px;
+}
+.chapter-text a {
+  color: var(--blue);
+}
+
+/* A typo and its fix inside running text. */
+.pm del {
+  background: var(--typo-bg);
+  color: var(--ink);
+  text-decoration: line-through;
+  text-decoration-color: rgb(11 15 26 / 0.5);
+}
+.pm ins {
+  margin-left: 0.06em;
+  color: var(--blue);
+  font-weight: 700;
+  text-decoration: none;
+}
+mark {
+  background: var(--typo-bg);
+  color: inherit;
+}
+
+/* ---------- Figures ---------- */
+figure {
+  margin: 0;
+}
+figcaption {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+/* One text field at three moments. */
+.strip {
+  margin: 4px 0 36px;
+  border-top: 1px solid var(--ink);
+}
+.strip-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: 8px 28px;
+  align-items: baseline;
+  padding: 22px 0;
+  border-bottom: 1px solid var(--hair);
+}
+.strip-field {
+  font-size: clamp(22px, 2.3vw, 32px);
+  font-weight: 700;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+.strip-say {
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.75;
+}
+.composing {
+  text-decoration: underline dotted 2px;
+  text-underline-offset: 0.18em;
+  color: var(--muted);
+}
+.strip-caret {
+  display: inline-block;
+  width: 2px;
+  height: 0.9em;
+  margin-left: 0.05em;
+  vertical-align: -0.08em;
+  background: var(--blue);
+}
+
+/* Large figures with captions. */
+.figures {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  gap: 24px;
+  margin: 8px 0 36px;
+  border-top: 1px solid var(--ink);
+}
+.figures > div {
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-top: 18px;
+}
+.figures dd {
+  margin: 0;
+  font-size: clamp(34px, 3.8vw, 56px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.figures dt {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* A command line. */
+.terminal {
+  margin: 4px 0 32px;
+  padding: 22px 24px 20px;
+  background: var(--ink);
+  color: #c9d2e3;
+  font: 15px/1.85 var(--mono);
+}
+.terminal p {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.terminal .pm del {
+  background: rgb(147 197 253 / 0.28);
+  color: #fff;
+}
+.terminal .pm ins {
+  color: var(--light);
+}
+.terminal figcaption {
+  margin-top: 16px;
+  color: var(--muted-dark);
+  font-family: var(--zh);
+}
+
+/* ---------- Questions and answers ---------- */
+.qa {
+  padding-bottom: 32px;
+  margin-bottom: 32px;
+  border-bottom: 1px solid var(--hair);
+  scroll-margin-top: 24px;
+}
+.qa:last-child {
+  padding-bottom: 0;
+  margin-bottom: 0;
+  border-bottom: 0;
+}
+.qa h3 {
+  margin: 0 0 10px;
+  font-size: clamp(19px, 1.6vw, 22px);
+  font-weight: 700;
+  line-height: 1.5;
+}
+.qa p {
+  color: var(--text);
+}
+.qa a {
+  color: var(--blue);
+}
+
+/* ---------- Plain lists of links ---------- */
+.plain-links {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--ink);
+}
+.plain-links a {
+  display: block;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--hair);
+  text-decoration: none;
+}
+
+/* ---------- Sign-off and colophon ---------- */
+.signoff {
+  padding-block: clamp(80px, 14vh, 168px) clamp(56px, 9vh, 96px);
+  background: var(--ink);
+  color: var(--paper);
+}
+.signoff-title {
+  grid-column: 1 / -1;
+  font-size: clamp(40px, 7.6vw, 132px);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+}
+.signoff-title:lang(en) {
+  letter-spacing: -0.035em;
+}
+.signoff-line {
+  grid-column: 1 / span 6;
+  align-self: end;
+  margin-top: 40px;
+  color: var(--muted-dark);
+  font-size: 15px;
+  line-height: 1.8;
+}
+.signoff-links {
+  grid-column: 8 / -1;
+  margin: 40px 0 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--hair-dark);
+}
+.signoff-links a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--hair-dark);
+  color: var(--paper);
+  font-size: 17px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.signoff-links a::after {
+  content: "→";
+  margin-left: auto;
+  color: var(--light);
+  transition: translate 0.3s var(--ease-snap);
+}
+.signoff-links a:hover::after {
+  translate: 6px 0;
+}
+.signoff-links .signoff-primary {
+  color: var(--light);
+  font-size: 20px;
+}
+.colophon {
+  align-items: center;
+  row-gap: 16px;
+  padding-block: 28px 56px;
+  background: var(--ink);
+  color: var(--muted-dark);
+  font-size: 14px;
+  line-height: 1.6;
+}
+.colophon > img {
+  grid-column: 1 / span 3;
+  width: auto;
+  height: 22px;
+}
+.colophon-links {
+  grid-column: 4 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px 22px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.colophon-links a {
+  color: #d4dbe8;
+  text-decoration: none;
+}
+.colophon-links a:hover {
+  color: var(--paper);
+  text-decoration: underline;
+}
+/* ---------- Narrower screens ---------- */
+@media (max-width: 1000px) {
+  .cover h1,
+  .cover .standfirst {
+    grid-column: 1 / -1;
+  }
+  .cover .standfirst {
+    margin-top: 24px;
+  }
+  .chapter h2 {
+    grid-column: 1 / -1;
+    position: static;
+    margin-bottom: 28px;
+  }
+  .chapter-text {
+    grid-column: 1 / -1;
+  }
+  .signoff-line,
+  .signoff-links {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 700px) {
+  body {
+    font-size: 16.5px;
+  }
+  .mast {
+    padding-block: 14px;
+  }
+  .mast-nav {
+    flex-basis: 100%;
+    gap: 4px 18px;
+  }
+  .specimen-line {
+    font-size: clamp(
+      30px,
+      calc((100vw - 2 * var(--gutter)) / var(--em-phone, 6)),
+      96px
+    );
+    line-height: 1.12;
+    text-wrap: balance;
+  }
+  .strip-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .strip-field {
+    white-space: normal;
+  }
+  .figures {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+  .figures > div {
+    padding-block: 16px;
+    border-bottom: 1px solid var(--hair);
+  }
+  .colophon > img,
+  .colophon-links {
+    grid-column: 1 / -1;
+    justify-content: flex-start;
+  }
+}

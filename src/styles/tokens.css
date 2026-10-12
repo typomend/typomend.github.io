@@ -1,0 +1,25 @@
+/* The brand's four colors from the CIS, with the shades and type the whole
+   site shares. The home page and the guide pages both start from here. */
+:root {
+  --ink: #0b0f1a;
+  --ink-2: #131a2b;
+  --blue: #2563eb;
+  --light: #93c5fd;
+  --neutral: #f4f6f8;
+  --paper: #ffffff;
+  --muted: #5b6477;
+  --muted-dark: #8b95ab;
+  --rule: rgba(11, 15, 26, 0.1);
+  --rule-dark: rgba(147, 197, 253, 0.12);
+
+  --zh: "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", sans-serif;
+  --en:
+    "Segoe UI Variable Text", "Segoe UI", "Noto Sans TC", system-ui, sans-serif;
+  --mono: "Cascadia Mono", "JetBrains Mono", Consolas, ui-monospace, monospace;
+
+  --gutter: clamp(16px, 4.4vw, 64px);
+  --ease-snap: cubic-bezier(0.2, 0, 0, 1);
+  --ease-fluent: cubic-bezier(0.1, 0.9, 0.2, 1);
+
+  color-scheme: light;
+}

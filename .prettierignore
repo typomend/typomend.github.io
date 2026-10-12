@@ -1,0 +1,8 @@
+dist
+dist-ssr
+public
+pnpm-lock.yaml
+src/assets/*.svg
+test-results
+playwright-report
+blob-report
